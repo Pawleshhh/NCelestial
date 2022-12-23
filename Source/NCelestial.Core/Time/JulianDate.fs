@@ -73,6 +73,41 @@ type public JulianDate =
                 | :? JulianDate as jd -> (this :> IComparable<JulianDate>).CompareTo jd
                 | _ -> 0
 
+        interface IConvertible with
+            member this.GetTypeCode () = TypeCode.Object
+            member this.ToBoolean(provider: IFormatProvider): bool = 
+                Convert.ToBoolean this.JulianDate
+            member this.ToByte(provider: IFormatProvider): byte = 
+                Convert.ToByte this.JulianDate
+            member this.ToChar(provider: IFormatProvider): char = 
+                Convert.ToChar this.JulianDate
+            member this.ToDateTime(provider: IFormatProvider): DateTime = 
+                Convert.ToDateTime this.JulianDate
+            member this.ToDecimal(provider: IFormatProvider): decimal = 
+                Convert.ToDecimal this.JulianDate
+            member this.ToDouble(provider: IFormatProvider): float = 
+                Convert.ToDouble this.JulianDate
+            member this.ToInt16(provider: IFormatProvider): int16 = 
+                Convert.ToInt16 this.JulianDate
+            member this.ToInt32(provider: IFormatProvider): int = 
+                Convert.ToInt32 this.JulianDate
+            member this.ToInt64(provider: IFormatProvider): int64 = 
+                Convert.ToInt64 this.JulianDate
+            member this.ToSByte(provider: IFormatProvider): sbyte = 
+                Convert.ToSByte this.JulianDate
+            member this.ToSingle(provider: IFormatProvider): float32 = 
+                Convert.ToSingle this.JulianDate
+            member this.ToString(provider: IFormatProvider): string = 
+                Convert.ToString this.JulianDate
+            member this.ToType(conversionType: Type, provider: IFormatProvider): obj = 
+                Convert.ChangeType(this.JulianDate, conversionType)
+            member this.ToUInt16(provider: IFormatProvider): uint16 = 
+                Convert.ToUInt16 this.JulianDate
+            member this.ToUInt32(provider: IFormatProvider): uint32 = 
+                Convert.ToUInt32 this.JulianDate
+            member this.ToUInt64(provider: IFormatProvider): uint64 = 
+                Convert.ToUInt64 this.JulianDate
+
         static member (+) (x: JulianDate, y: JulianDate) =
             new JulianDate (x.JulianDate + y.JulianDate)
 
