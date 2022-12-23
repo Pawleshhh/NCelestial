@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Time\JulianDateTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -17,6 +18,10 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     <PackageReference Include="NUnit.Analyzers" Version="3.3.0" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NCelestial.Core\NCelestial.Core.fsproj" />
   </ItemGroup>
 
 </Project>

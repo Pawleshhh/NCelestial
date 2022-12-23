@@ -12,17 +12,14 @@ type public JulianDate =
         member this.FractionOfDay = this.JulianDate |> JulianDate.RetrieveFractionOfDay
 
         new (julianDate) = 
-            // TODO: Check for max (System.DateTime)
-            if julianDate < 0.0 then
-                failwith "Julian date cannot be negative"
-
+            JulianDate.FailIfDateIsNotValid julianDate
             { JulianDate = julianDate }
         
         new (dayNumber, fractionOfDay) = 
             if dayNumber |> abs |> fractionalPart <> 0.5 then 
                 failwith "Day number must have fractional part equal to 0.5"
-            if fractionOfDay |> notInRangeInclusive 0.0 1.0 then
-                failwith "Fraction of day must have fractional part only"
+            if fractionOfDay < 0.0 || fractionOfDay >= 1.0 then
+                failwith "Fraction of day must have fractional part only and be positive"
 
             new JulianDate(dayNumber + fractionOfDay)
 
@@ -42,5 +39,15 @@ type public JulianDate =
             match julianDate - (truncate julianDate) + 0.5 with
             | f when f >= 1.0 -> f - 1.0
             | f -> f
+
+        static member FailIfDateIsNotValid julianDate =
+            if julianDate < JulianDate.minValue || julianDate > JulianDate.maxValue then
+                failwith "Julian date is out of range"
+
+        static member private minValue = 0.0
+        static member private maxValue = 1e9
+
+        static member MinValue = new JulianDate(JulianDate.minValue)
+        static member MaxValue = new JulianDate(JulianDate.maxValue)
 
     end
