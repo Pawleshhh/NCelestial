@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Utilities\MathHelper.fs" />
+    <Compile Include="Time\TimeConstants.fs" />
     <Compile Include="Time\JulianDate.fs" />
   </ItemGroup>
 

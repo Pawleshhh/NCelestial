@@ -1,13 +1,15 @@
 ﻿namespace NCelestial.Core
 
+open System.Runtime.InteropServices
 open NCelestial.Core.MathHelper
 
 type public JulianDate =
     struct
         val JulianDate: float
 
-        member this.Date =
-            0.0
+        member this.DayNumber =  this.JulianDate |> JulianDate.RetrieveDayNumber
+
+        member this.FractionOfDay = this.JulianDate |> JulianDate.RetrieveFractionOfDay
 
         new (julianDate) = 
             // TODO: Check for max (System.DateTime)
@@ -24,5 +26,21 @@ type public JulianDate =
 
             new JulianDate(dayNumber + fractionOfDay)
 
+        member this.JulianYear epoch =
+            (this.DayNumber - epoch + this.FractionOfDay) / TimeConstants.DaysPerJulianYear
+
+        member this.JulianCentury epoch =
+            (this.DayNumber - epoch + this.FractionOfDay) / TimeConstants.DaysPerJulianCentury
+
+        member this.JulianMillenium epoch =
+            (this.DayNumber - epoch + this.FractionOfDay) / TimeConstants.DaysPerJulianMillennium
+
+        static member RetrieveDayNumber julianDate =
+            truncate (julianDate - 0.5) + 0.5
+
+        static member RetrieveFractionOfDay julianDate =
+            match julianDate - (truncate julianDate) + 0.5 with
+            | f when f >= 1.0 -> f - 1.0
+            | f -> f
 
     end
