@@ -24,7 +24,7 @@ let ``JulianDate, pass dayNumber and fraction, properties set as expected`` dayN
 [<TestCase(999_999_999.5, 1.0)>]
 [<TestCase(999_999_999.5, 1.1)>]
 let ``JulianDate, pass invalid fraction of day, throws exception`` dayNumber fraction =
-    Assert.Throws<Exception>(fun _ -> new JulianDate (dayNumber, fraction) |> ignore)
+    Assert.Throws<exn>(fun _ -> new JulianDate (dayNumber, fraction) |> ignore)
     |> ignore
 
 [<TestCase(10.0)>]
@@ -34,7 +34,7 @@ let ``JulianDate, pass invalid fraction of day, throws exception`` dayNumber fra
 [<TestCase(10.9999)>]
 [<TestCase(11.0)>]
 let ``JulianDate, pass invalid day number, throws exception`` dayNumber =
-    Assert.Throws<Exception>(fun _ -> new JulianDate (dayNumber, 0.0) |> ignore)
+    Assert.Throws<exn>(fun _ -> new JulianDate (dayNumber, 0.0) |> ignore)
     |> ignore
 
 [<TestCase(20043.9, 20043.5, 0.4)>]
@@ -51,5 +51,49 @@ let ``JulianDate, pass julian date, properties set as expected`` date dayNumber 
 [<TestCase(-0.001)>]
 [<TestCase(1_000_000_000.1)>]
 let ``JulianDate, pass invalid julian date, throws exception`` julianDate =
-    Assert.Throws<Exception>(fun _ -> new JulianDate (julianDate) |> ignore)
+    Assert.Throws<exn>(fun _ -> new JulianDate (julianDate) |> ignore)
     |> ignore
+
+[<TestCase(30.0, 30.0, 0)>]
+[<TestCase(30.1, 30.0, 1)>]
+[<TestCase(30.0, 30.1, -1)>]
+let ``CompareTo, compare julian date as object, expect value`` date1 date2 (expectedValue: int) =
+    let julianDate1 = new JulianDate (date1) :> IComparable
+    let julianDate2 = new JulianDate (date2) :> obj
+
+    let result = julianDate1.CompareTo julianDate2
+
+    Assert.That (result, Is.EqualTo(expectedValue))
+
+[<TestCase(30.0, 30.0, 0)>]
+[<TestCase(30.1, 30.0, 1)>]
+[<TestCase(30.0, 30.1, -1)>]
+let ``CompareTo, compare julian date, expect value`` date1 date2 (expectedValue: int) =
+    let julianDate1 = new JulianDate (date1) :> IComparable<JulianDate>
+    let julianDate2 = new JulianDate (date2)
+
+    let result = julianDate1.CompareTo julianDate2
+
+    Assert.That (result, Is.EqualTo(expectedValue))
+    
+[<TestCase(30.0, 30.0, true)>]
+[<TestCase(30.1, 30.0, false)>]
+[<TestCase(30.0, 30.1, false)>]
+let ``Equals, check equality with julian date as object, expect true or false`` date1 date2 (expectedValue: bool) =
+    let julianDate1 = new JulianDate (date1) :> obj
+    let julianDate2 = new JulianDate (date2) :> obj
+
+    let result = julianDate1.Equals julianDate2
+
+    Assert.That (result, Is.EqualTo(expectedValue))
+
+[<TestCase(30.0, 30.0, true)>]
+[<TestCase(30.1, 30.0, false)>]
+[<TestCase(30.0, 30.1, false)>]
+let ``Equals, check equality with julian date, expect true or false`` date1 date2 (expectedValue: bool) =
+    let julianDate1 = new JulianDate (date1) :> IEquatable<JulianDate>
+    let julianDate2 = new JulianDate (date2)
+
+    let result = julianDate1.Equals julianDate2
+
+    Assert.That (result, Is.EqualTo(expectedValue))
