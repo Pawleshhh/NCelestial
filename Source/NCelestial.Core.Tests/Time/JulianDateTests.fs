@@ -97,3 +97,44 @@ let ``Equals, check equality with julian date, expect true or false`` date1 date
     let result = julianDate1.Equals julianDate2
 
     Assert.That (result, Is.EqualTo(expectedValue))
+
+[<TestCase(24156.32, "J", "24156.32 JD")>]
+[<TestCase(24156.32, "", "24156.32 JD")>]
+[<TestCase(24156.0, "J", "24156.00 JD")>]
+[<TestCase(24156.0, "", "24156.00 JD")>]
+[<TestCase(24156.314214, "J5", "24156.31421 JD")>]
+[<TestCase(24156.32, "D", "24156.32")>]
+[<TestCase(24156.0, "D", "24156.00")>]
+[<TestCase(24156.314214, "D5", "24156.31421")>]
+let ``ToString, expect formatted julian date`` (date: float) (format: string) (expected: string) =
+    let julianDate = new JulianDate(date)
+    let result = julianDate.ToString(format)
+    Assert.That(result, Is.EqualTo(expected))
+
+[<TestCase(24156.32, "24156.32 JD")>]
+[<TestCase(24156.0, "24156.00 JD")>]
+let ``Object.ToString, expect formatted julian date in default format`` (date: float) (expected: string) =
+    let julianDate = new JulianDate(date)
+    let result = julianDate.ToString()
+    Assert.That(result, Is.EqualTo(expected))
+
+[<TestCase(24156.32, "24156.32 JD")>]
+[<TestCase(24156.0, "24156.00 JD")>]
+let ``ToString, give null format and expect formatted julian date in default format`` (date: float) (expected: string) =
+    let julianDate = new JulianDate(date)
+    let result = julianDate.ToString(null)
+    Assert.That(result, Is.EqualTo(expected))
+
+[<TestCase("A")>]
+[<TestCase("2J")>]
+[<TestCase("J10.2")>]
+[<TestCase("J-1")>]
+[<TestCase("Jx")>]
+[<TestCase("2D")>]
+[<TestCase("D10.2")>]
+[<TestCase("D-1")>]
+[<TestCase("Dx")>]
+[<TestCase("343")>]
+let ``ToString, invalid format so format exception is thrown`` (invalidFormat: string) =
+    let julianDate = new JulianDate()
+    Assert.Throws<FormatException>(fun () -> julianDate.ToString(invalidFormat) |> ignore) |> ignore

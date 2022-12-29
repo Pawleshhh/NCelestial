@@ -1,6 +1,7 @@
 ﻿namespace NCelestial.Core
 
 open System
+open System.Globalization
 open NCelestial.Core.MathHelper
 
 [<CustomComparison; CustomEquality>]
@@ -108,13 +109,45 @@ type public JulianDate =
             member this.ToUInt64(provider: IFormatProvider): uint64 = 
                 Convert.ToUInt64 this.JulianDate
 
+        override this.ToString() =
+            (this :> IFormattable).ToString("J", CultureInfo.InvariantCulture)
+        member this.ToString(format) =
+            (this :> IFormattable).ToString(format, CultureInfo.InvariantCulture)
+
+        interface IFormattable with
+            member this.ToString(format, formatProvider) =
+                try
+                    let provider =
+                        match formatProvider with
+                        | null -> CultureInfo.InvariantCulture :> IFormatProvider
+                        | f -> f
+                    let (decimalPlaces, actualFormat) =
+                        match format with
+                        | null -> (2, "J")
+                        | f when f.Length = 0 -> (2, "J")
+                        | f when f.Length = 1 -> (2, format)
+                        | f -> (f[1..] |> int, format)
+
+                    if decimalPlaces < 0 then
+                        new FormatException("Decimal places cannot be less than 0") |> raise
+
+                    let createFormattedValue (jd: float) (p: IFormatProvider) =
+                        jd.ToString($"F{decimalPlaces}", p)
+
+                    match actualFormat[0] with
+                    | 'D' -> createFormattedValue this.JulianDate provider
+                    | 'J' -> (createFormattedValue this.JulianDate provider) + " JD"
+                    | _ -> new FormatException($"{actualFormat[0]} format is not supported") |> raise
+                with
+                    | ex -> new FormatException("Invalid format for Julian Date", ex) |> raise
+
         static member (+) (x: JulianDate, y: JulianDate) =
             new JulianDate (x.JulianDate + y.JulianDate)
 
         static member (-) (x: JulianDate, y: JulianDate) =
             new JulianDate (x.JulianDate - y.JulianDate)
-            
-        static member (*) (x: JulianDate, y: JulianDate) =
+
+        static member ( * ) (x: JulianDate, y: JulianDate) =
             new JulianDate (x.JulianDate * y.JulianDate)
 
         static member (/) (x: JulianDate, y: JulianDate) =
